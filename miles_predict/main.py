@@ -40,8 +40,10 @@ def event_test(say, event, client):
     if files:
         for file in files:
             # Download Slack File
+            # image_stream = download_slack_file(file["url_private_download"])
+            image_stream = download_slack_file(file["thumb_1024"])
+
             logger.debug(f"File downloaded!")
-            image_stream = download_slack_file(file["url_private_download"])
 
             faces_image_stream = find_known_faces(image_stream)
 
