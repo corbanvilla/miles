@@ -32,6 +32,7 @@ def name_filter(name):
 @app.event("app_mention")
 def event_test(say, event, client):
     say("Got it! Gimmie a hot sec....")
+    logger.debug(f"Event received: {event}")
     channel = event.get("channel")
     command = command_filter.findall(event.get("text"))[0].strip()
     files = event.get("files")
@@ -39,6 +40,7 @@ def event_test(say, event, client):
     if files:
         for file in files:
             # Download Slack File
+            logger.debug(f"File downloaded!")
             image_stream = download_slack_file(file["url_private_download"])
 
             faces_image_stream = find_known_faces(image_stream)
@@ -75,8 +77,8 @@ def event_test(say, event, client):
                      fr'{rclone_drive}:/{main_dir}/{people_dir}/{match}/{photo_name}']  # Destination
                 )
 
-            logger.debug("Done!")
-            say("Done!")
+            logger.debug(f"Done finding {match}!")
+            say(f"Done finding {match}!")
 
         else:
             say(f"Could not find: {name}... make sure it's spelled right!")

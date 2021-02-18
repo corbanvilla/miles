@@ -24,7 +24,8 @@ def find_known_faces(stream_image):
     draw = ImageDraw.Draw(overlay_image)
 
     # Find all the faces and face encodings in the unknown image
-    face_locations = face_recognition.face_locations(image, model="cnn")
+    # face_locations = face_recognition.face_locations(image, model="cnn")
+    face_locations = face_recognition.face_locations(image, model="hog")
     face_encodings = face_recognition.face_encodings(image, face_locations)
 
     # match_face_encodings(face_locations, face_encodings)
@@ -32,6 +33,10 @@ def find_known_faces(stream_image):
 
     del draw
 
+    # Shrink our image
+    overlay_image.thumbnail((1024, 1024), Image.ANTIALIAS)
+
+    # Save it into a bytes stream
     output_image_stream = BytesIO()
     overlay_image.save(output_image_stream, format='JPEG')
 
