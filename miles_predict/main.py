@@ -41,7 +41,7 @@ def event_test(say, event, client):
         for file in files:
             # Download Slack File
             # image_stream = download_slack_file(file["url_private_download"])
-            image_stream = download_slack_file(file["thumb_1024"])
+            image_stream = download_slack_file(file.get("thumb_1024") or file.get("url_private_download"))  # if smaller than 1024x1024
 
             logger.debug(f"File downloaded!")
 

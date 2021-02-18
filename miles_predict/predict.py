@@ -34,7 +34,7 @@ def find_known_faces(stream_image):
     del draw
 
     # Shrink our image
-    overlay_image.thumbnail((1024, 1024), Image.ANTIALIAS)
+    # overlay_image.thumbnail((1024, 1024), Image.ANTIALIAS)
 
     # Save it into a bytes stream
     output_image_stream = BytesIO()
