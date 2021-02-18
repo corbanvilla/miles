@@ -1,0 +1,11 @@
+FROM animcogn/face_recognition:gpu
+
+COPY docker/requirements-train.txt requirements.txt
+
+RUN pip3 install -r /requirements.txt
+
+COPY miles_train /miles_train
+
+ENV LANG=C.UTF-8
+
+CMD [ "python3", "/miles_train/main.py" ]

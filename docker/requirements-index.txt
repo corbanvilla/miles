@@ -1,0 +1,7 @@
+redis
+loguru
+msgpack-numpy
+python-magic
+# libtiff
+# libjpeg
+# openjpeg

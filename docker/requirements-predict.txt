@@ -1,0 +1,5 @@
+slack_bolt
+requests
+redis
+loguru
+msgpack-numpy

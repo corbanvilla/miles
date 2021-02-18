@@ -1,0 +1,27 @@
+FROM animcogn/face_recognition:cpu
+
+ADD https://downloads.rclone.org/rclone-current-linux-amd64.zip /rclone.zip
+
+COPY docker/requirements-predict.txt requirements.txt
+
+# Dependencies
+RUN apt-get update -y && \
+    apt-get install -y unzip && \
+    # Rclone Install
+    unzip -d /rclone /rclone.zip && \
+    cp /rclone/*/rclone /usr/bin/ && \
+    rm -rf /rclone.zip /rclone && \
+    apt-get purge -y unzip && \
+    # Rclone config
+    mkdir -p /root/.config/rclone && \
+    ln -s /secrets/rclone.conf /root/.config/rclone/rclone.conf && \
+    # Pip requirements
+    pip3 install -r requirements.txt
+
+RUN pip3 install -r /requirements.txt
+
+COPY miles_predict /miles_predict
+
+ENV LANG=C.UTF-8
+
+CMD [ "python3", "-c", "from miles_predict.main import main; main()" ]
