@@ -23,7 +23,7 @@ logger.debug(f"Storing to redis at: {redis_host}")
 r = Redis(redis_host)
 
 training_files = iglob(training_regex)
-name_regex = re.compile(r"_(.*?)\.")
+name_regex = re.compile(r"_(.*?)_01\.")
 
 # Grab a couple files to process
 # img_names = [next(training_files) for _ in range(0, 20)]
