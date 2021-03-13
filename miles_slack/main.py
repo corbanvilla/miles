@@ -54,9 +54,9 @@ def event_test(say, event, client):
                     message="Here you go!"
                 )
 
-                accuracy_scores = [f'{name}: {score}\n' for name, score in json.loads(req.headers.get('accuracy_scores'))]
-
-                say(f"Accuracy scores: {*accuracy_scores,}")
+                # accuracy_scores = [f'{name}: {score}\n' for name, score in json.loads(req.headers.get('accuracy_scores'))]
+                #
+                # say(f"Accuracy scores: {*accuracy_scores,}")
 
             except requests.ConnectionError as e:
                 logger.error(f"Unable to reach backend.... {e}")
@@ -75,7 +75,7 @@ def event_test(say, event, client):
 
             req = requests.post(
                 url=f'{BASE_API_URL}/find_person/',
-                data=payload
+                data=json.dumps(payload)
             )
 
             say(f"Uploading photos of: {json.loads(req.text).get('profile_name')} to {RCLONE_DRIVE}:{DRIVE_PATH_PREFIX}/{DRIVE_OUTPUT_DIR}")
