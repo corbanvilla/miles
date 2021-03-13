@@ -24,4 +24,4 @@ COPY miles_slack /miles_slack
 
 ENV LANG=C.UTF-8
 
-CMD [ "python3", "-c", "from miles_predict.main import main; main()" ]
+CMD [ "python3", "-c", "from miles_slack.main import main; main()" ]
