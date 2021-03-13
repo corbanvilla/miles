@@ -1,12 +1,11 @@
 import requests
 
+from os import environ
 from io import BytesIO
 from slack_sdk.errors import SlackApiError
 from loguru import logger
 
-from miles_predict.resources.default_configs import (
-    SLACK_BOT_TOKEN
-)
+SLACK_BOT_TOKEN = environ.get("SLACK_BOT_TOKEN")
 
 
 def download_slack_file(url):
