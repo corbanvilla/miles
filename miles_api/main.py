@@ -419,45 +419,44 @@ class PredictImagesInfo(BaseModel):
 @app.post('/predict_label_image/')
 async def predict_label_images(predict_images_info: PredictImagesInfo = PredictImagesInfo(), image: UploadFile = File(...)):
 
-    image.file.seek(0)
     payload = {"images": {"data": [b64encode(await image.read()).decode('utf-8')]}}
 
-    try:
-        req = requests.post(url='http://10.0.42.70:31428/extract', data=json.dumps(payload))
+    # try:
+    req = requests.post(url='http://10.0.42.70:31428/extract', data=json.dumps(payload))
 
-        faces = json.loads(req.text)[0]
+    faces = json.loads(req.text)[0]
 
-        # Create an image to draw on
-        overlay_image = Image.open(image.file)
+    # Create an image to draw on
+    overlay_image = Image.open(image.file)
 
-        draw = ImageDraw.Draw(overlay_image)
+    draw = ImageDraw.Draw(overlay_image)
 
-        # Loop through faces
-        for (top, right, bottom, left), face_encoding in zip(faces['bbox'], faces['vec']):
+    # Loop through faces
+    for (top, right, bottom, left), face_encoding in zip(faces['bbox'], faces['vec']):
 
-            # See if the face is a match for the known face(s)
-            profile_name = find_closest_match(profiles, face_encoding)
+        # See if the face is a match for the known face(s)
+        profile_name = find_closest_match(profiles, face_encoding)
 
-            # Draw a box around the face using the Pillow module
-            draw.rectangle(((left, top), (right, bottom)), outline=(0, 0, 255))
+        # Draw a box around the face using the Pillow module
+        draw.rectangle(((left, top), (right, bottom)), outline=(0, 0, 255))
 
-            # Draw a label with a name below the face
-            text_width, text_height = draw.textsize(profile_name)
-            draw.rectangle(((left, bottom - text_height - 10), (right, bottom)), fill=(0, 0, 255), outline=(0, 0, 255))
-            draw.text((left + 6, bottom - text_height - 5), profile_name, fill=(255, 255, 255, 255))
+        # Draw a label with a name below the face
+        text_width, text_height = draw.textsize(profile_name)
+        draw.rectangle(((left, bottom - text_height - 10), (right, bottom)), fill=(0, 0, 255), outline=(0, 0, 255))
+        draw.text((left + 6, bottom - text_height - 5), profile_name, fill=(255, 255, 255, 255))
 
-        del draw
+    del draw
 
-        # Save it into a bytes stream
-        output_image_stream = BytesIO()
-        overlay_image.save(output_image_stream, format='JPEG')
-        output_image_stream.seek(0)
+    # Save it into a bytes stream
+    output_image_stream = BytesIO()
+    overlay_image.save(output_image_stream, format='JPEG')
+    output_image_stream.seek(0)
 
-        # return {'image': output_image_stream.getvalue(), 'accuracy_scores': accuracy_scores}
-        return StreamingResponse(output_image_stream)
+    # return {'image': output_image_stream.getvalue(), 'accuracy_scores': accuracy_scores}
+    return StreamingResponse(output_image_stream)
 
-    except Exception as e:
-        logger.error(f"Unable to analyze image: {e}")
+    # except Exception as e:
+    #     logger.error(f"Unable to analyze image: {e}")
 
 
 #################################
