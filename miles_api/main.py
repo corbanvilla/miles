@@ -475,8 +475,10 @@ class FindPerson(BaseModel):
     path: str
     output_dir: str
 
+    # redis_images_index: Optional[str] = f"images_index_{version}"
+    # redis_faces_to_images: Optional[str] = f"faces_to_images_{version}"
     redis_images_index: Optional[str] = f"images_index_{version}"
-    redis_faces_to_images: Optional[str] = f"faces_to_images_{version}"
+    redis_faces_to_images: Optional[str] = f"faces_to_images"
 
     @validator('path')
     def no_leading_trailing_slash(cls, v):
