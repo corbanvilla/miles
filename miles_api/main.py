@@ -38,6 +38,17 @@ mime = magic.Magic(mime=True)
 profiles = pickle.loads(r.get('known_encodings'))
 logger.debug(f'Loaded {len(profiles)} profiles....')
 
+# Pull profiles
+# all_profiles = {name.decode('utf-8'): images.decode('utf-8') for name, images in r.hgetall(find_person_info.redis_faces_to_images).items()}
+# images_index = {img_hash.decode('utf-8'): path.decode('utf-8') for img_hash, path in r.hgetall(find_person_info.redis_images_index).items()}
+
+all_profiles = {name.decode('utf-8'): images.decode('utf-8') for name, images in r.hgetall("faces_to_images").items()}
+images_index = {img_hash.decode('utf-8'): path.decode('utf-8') for img_hash, path in r.hgetall("images_index_10").items()}
+
+
+logger.debug(f"Profiles loaded: {len(all_profiles)}")
+logger.debug(f"Images loaded: {len(images_index)}")
+
 
 #################################
 #        Compare Faces          #
@@ -487,13 +498,6 @@ class FindPerson(BaseModel):
 
 @app.post('/find_person/')
 async def find_person(find_person_info: FindPerson, background_tasks: BackgroundTasks):
-
-    # Pull profiles
-    all_profiles = {name.decode('utf-8'): images.decode('utf-8') for name, images in r.hgetall(find_person_info.redis_faces_to_images).items()}
-    images_index = {img_hash.decode('utf-8'): path.decode('utf-8') for img_hash, path in r.hgetall(find_person_info.redis_images_index).items()}
-
-    logger.debug(f"Profiles loaded: {len(all_profiles)}")
-    logger.debug(f"Images loaded: {len(images_index)}")
 
     # Find closest match
     closest_match = fz_process.extractOne(find_person_info.search_string, all_profiles.keys())[0]

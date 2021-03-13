@@ -54,9 +54,9 @@ def event_test(say, event, client):
                     message="Here you go!"
                 )
 
-                # accuracy_scores = [f'{name}: {score}' for name, score in json.loads(req.headers.get('accuracy_scores'))]
+                accuracy_scores = [f'{name}: {score}\n' for name, score in json.loads(req.headers.get('accuracy_scores'))]
 
-                # say(f"Accuracy scores: {*accuracy_scores,}")
+                say(f"Accuracy scores: {*accuracy_scores,}")
 
             except requests.ConnectionError as e:
                 logger.error(f"Unable to reach backend.... {e}")
