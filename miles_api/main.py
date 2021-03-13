@@ -415,24 +415,26 @@ class PredictImagesInfo(BaseModel):
     redis_known_encodings: Optional[str] = f"known_encodings_{version}"
 
 
+@logger.catch
 @app.post('/predict_label_image/')
 async def predict_label_images(predict_images_info: PredictImagesInfo = PredictImagesInfo(), image: UploadFile = File(...)):
 
-    # Create an image to draw on
-    overlay_image = Image.open(image.file)
-
-    draw = ImageDraw.Draw(overlay_image)
-
     image.file.seek(0)
-    payload = {"images": {"data": [b64encode(image.file.read()).decode('utf-8')]}}
+    payload = {"images": {"data": [b64encode(image.read()).decode('utf-8')]}}
 
     try:
         req = requests.post(url='http://10.0.42.70:31428/extract', data=json.dumps(payload))
 
         faces = json.loads(req.text)[0]
 
+        # Create an image to draw on
+        overlay_image = Image.open(image.file)
+
+        draw = ImageDraw.Draw(overlay_image)
+
         # Loop through faces
         for (top, right, bottom, left), face_encoding in zip(faces['bbox'], faces['vec']):
+
             # See if the face is a match for the known face(s)
             profile_name = find_closest_match(profiles, face_encoding)
 
