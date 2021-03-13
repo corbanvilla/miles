@@ -59,7 +59,7 @@ def download_images():
     print(x.text)
 
 
-download_images()
+# download_images()
 
 
 process_images = {
@@ -133,4 +133,4 @@ def upload_images():
     temp.close()
 
 
-# upload_images()
+upload_images()
