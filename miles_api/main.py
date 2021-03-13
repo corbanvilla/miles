@@ -36,6 +36,7 @@ app = FastAPI()
 mime = magic.Magic(mime=True)
 
 profiles = pickle.loads(r.get('known_encodings'))
+logger.debug(f'Loaded {len(profiles)} profiles....')
 
 
 #################################
@@ -429,7 +430,8 @@ async def predict_label_images(predict_images_info: PredictImagesInfo = PredictI
     # try:
     req = requests.post(url='http://10.0.42.70:31428/extract', data=json.dumps(payload))
 
-    faces = json.loads(req.text)[0]
+    faces = json.loads(req.content)[0]
+    logger.debug(f"found: {len(faces)} faces...")
 
     # Loop through faces
     for face in faces:
