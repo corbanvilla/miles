@@ -38,7 +38,7 @@ def upload_slack_file(file, channel, client, message):
             channels=channel,
             initial_comment=message,
             file=file,
-            filetype="jpg"
+            filetype="jpeg"
         )
         # Log the result
         logger.info(result)
