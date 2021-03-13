@@ -127,11 +127,11 @@ def upload_images():
     # x = requests.post(url, files={'image': open('/Users/animcogn/Desktop/bests@mosts raycello&corban.jpg', 'rb')})
     x = requests.post(url, files={'image': open('/Users/animcogn/Downloads/007_LAMBERT_MILES.JPG', 'rb')})
 
-    print(x.headers)
+    print(f"headers: {x.headers}")
 
     temp = open('temp.jpg', 'wb')
     temp.write(x.content)
     temp.close()
 
 
-# upload_images()
+upload_images()

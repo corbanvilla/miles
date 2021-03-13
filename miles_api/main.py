@@ -16,7 +16,7 @@ from io import BytesIO
 from PIL import Image, ImageDraw
 from loguru import logger
 from fastapi import FastAPI
-from fastapi import BackgroundTasks, File, UploadFile
+from fastapi import BackgroundTasks, File, UploadFile, Response
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, validator
 from typing import Optional, List
@@ -441,7 +441,7 @@ class PredictImagesInfo(BaseModel):
 
 @logger.catch
 @app.post('/predict_label_image/')
-async def predict_label_images(predict_images_info: PredictImagesInfo = PredictImagesInfo(), image: UploadFile = File(...)):
+async def predict_label_images(response: Response, predict_images_info: PredictImagesInfo = PredictImagesInfo(), image: UploadFile = File(...)):
 
     payload = {"images": {"data": [b64encode(image.file.read()).decode('utf-8')]}}
 
@@ -484,7 +484,9 @@ async def predict_label_images(predict_images_info: PredictImagesInfo = PredictI
     output_image_stream.seek(0)
 
     # return {'image': output_image_stream.getvalue(), 'accuracy_scores': accuracy_scores}
-    return StreamingResponse(output_image_stream, headers={'accuracy_scores': accuracy_scores})
+    response.headers['X-accuracy_scores'] = json.dumps(accuracy_scores)
+
+    return StreamingResponse(output_image_stream)
 
     # except Exception as e:
     #     logger.error(f"Unable to analyze image: {e}")
