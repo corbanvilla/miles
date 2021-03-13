@@ -420,7 +420,7 @@ class PredictImagesInfo(BaseModel):
 async def predict_label_images(predict_images_info: PredictImagesInfo = PredictImagesInfo(), image: UploadFile = File(...)):
 
     image.file.seek(0)
-    payload = {"images": {"data": [b64encode(image.read()).decode('utf-8')]}}
+    payload = {"images": {"data": [b64encode(await image.read()).decode('utf-8')]}}
 
     try:
         req = requests.post(url='http://10.0.42.70:31428/extract', data=json.dumps(payload))
