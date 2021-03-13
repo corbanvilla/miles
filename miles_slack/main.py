@@ -48,7 +48,7 @@ def event_test(say, event, client):
                 )
 
                 upload_slack_file(
-                    file=req.content,
+                    file=json.loads(req.content),
                     channel=channel,
                     client=client,
                     message="Here you go!"
