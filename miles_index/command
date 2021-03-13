@@ -1,1 +1,1 @@
-rclone lsjson "2021_gdrive:/01- Photos/Illustrated Photo Pictures" --files-only --hash --no- modtime --recursive
+rclone lsjson "2021_gdrive:/01- Photos/Illustrated Photo Pictures" --files-only --hash --no-modtime --recursive

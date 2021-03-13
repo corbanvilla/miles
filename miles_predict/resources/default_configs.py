@@ -5,3 +5,5 @@ SLACK_SOCKET_TOKEN = environ.get("SLACK_SOCKET_TOKEN")  # starts w/ xapp
 SLACK_BOT_TOKEN = environ.get("SLACK_BOT_TOKEN")  # starts w/ xoxb
 
 REDIS_HOST = environ.get("REDIS_HOST")
+
+assert REDIS_HOST

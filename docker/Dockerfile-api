@@ -1,0 +1,28 @@
+FROM animcogn/face_recognition:gpu
+
+ADD https://downloads.rclone.org/rclone-current-linux-amd64.zip /rclone.zip
+
+COPY docker/requirements-api.txt requirements.txt
+
+# Dependencies
+RUN apt-get update -y && \
+    apt-get install -y unzip && \
+    # Rclone Install
+    unzip -d /rclone /rclone.zip && \
+    cp /rclone/*/rclone /usr/bin/ && \
+    rm -rf /rclone.zip /rclone && \
+    apt-get purge -y unzip && \
+    # Rclone config
+    mkdir -p /root/.config/rclone && \
+    ln -s /secrets/rclone.conf /root/.config/rclone/rclone.conf && \
+    # Pip requirements
+    pip3 install -r requirements.txt
+
+WORKDIR /
+
+COPY miles_api /miles_api
+COPY miles_shared /miles_shared
+
+ENV LANG=C.UTF-8
+
+CMD [ "uvicorn", "--host", "0.0.0.0", "miles_api.main:app" ]

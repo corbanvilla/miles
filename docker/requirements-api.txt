@@ -1,0 +1,12 @@
+fastapi
+redis
+loguru
+python-magic
+pillow
+uvicorn
+sklearn
+numpy
+python-multipart  # fastapi file uploads
+# python-Levenshtein
+fuzzywuzzy
+requests

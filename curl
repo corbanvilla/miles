@@ -1,0 +1,2 @@
+curl -X POST 10.0.42.70:31427/update_image_index/ -d '{"rclone_drive":"2021_gdrive", "path":"01- Photos"}'
+curl -X POST 10.0.42.70:31427/download_training_images/ -d '{"rclone_drive":"2021_gdrive", "path":"01- Photos"}'
