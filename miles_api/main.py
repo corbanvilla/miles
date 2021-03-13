@@ -419,20 +419,22 @@ class PredictImagesInfo(BaseModel):
 @app.post('/predict_label_image/')
 async def predict_label_images(predict_images_info: PredictImagesInfo = PredictImagesInfo(), image: UploadFile = File(...)):
 
-    payload = {"images": {"data": [b64encode(await image.read()).decode('utf-8')]}}
+    # Create an image to draw on
+    overlay_image = Image.open(image.file)
+
+    draw = ImageDraw.Draw(overlay_image)
+
+    payload = {"images": {"data": [b64encode(image.file.read()).decode('utf-8')]}}
 
     # try:
     req = requests.post(url='http://10.0.42.70:31428/extract', data=json.dumps(payload))
 
     faces = json.loads(req.text)[0]
 
-    # Create an image to draw on
-    overlay_image = Image.open(image.file)
-
-    draw = ImageDraw.Draw(overlay_image)
-
     # Loop through faces
-    for (top, right, bottom, left), face_encoding in zip(faces['bbox'], faces['vec']):
+    for face in faces:
+        top, right, bottom, left = faces['bbox']
+        face_encoding = faces['vec']
 
         # See if the face is a match for the known face(s)
         profile_name = find_closest_match(profiles, face_encoding)
