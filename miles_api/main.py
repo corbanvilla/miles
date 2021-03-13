@@ -421,11 +421,12 @@ class PredictImagesInfo(BaseModel):
 async def predict_label_images(predict_images_info: PredictImagesInfo = PredictImagesInfo(), image: UploadFile = File(...)):
 
     # Create an image to draw on
-    overlay_image = Image.open(image.file)
+    img = image.file.read()
+    overlay_image = Image.open(img)
 
     draw = ImageDraw.Draw(overlay_image)
 
-    payload = {"images": {"data": [b64encode(image.file.read()).decode('utf-8')]}}
+    payload = {"images": {"data": [b64encode(img).decode('utf-8')]}}
 
     # try:
     req = requests.post(url='http://10.0.42.70:31428/extract', data=json.dumps(payload))
