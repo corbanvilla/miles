@@ -112,7 +112,8 @@ def call_find_person():
     print(x.text)
 
 
-# call_find_person()
+call_find_person()
+
 
 def upload_images():
     url = 'http://10.0.42.70:31427/predict_label_image/'
@@ -133,4 +134,4 @@ def upload_images():
     temp.close()
 
 
-upload_images()
+# upload_images()
