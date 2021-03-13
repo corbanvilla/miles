@@ -458,7 +458,7 @@ async def predict_label_images(response: Response, predict_images_info: PredictI
     logger.debug(f"found: {len(faces)} faces...")
 
     # Loop through faces
-    accuracy_scores = []
+    accuracy_scores = {}
     for face in faces:
         left, top, right, bottom = face['bbox']
         face_encoding = face['vec']
