@@ -59,7 +59,7 @@ def download_images():
     print(x.text)
 
 
-# download_images()
+download_images()
 
 
 process_images = {
@@ -112,7 +112,7 @@ def call_find_person():
     print(x.text)
 
 
-call_find_person()
+# call_find_person()
 
 
 def upload_images():

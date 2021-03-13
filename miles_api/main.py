@@ -70,9 +70,21 @@ def compare_faces(f1, f2):
 def find_closest_match(profiles, f1):
     dists = np.array([compare_faces(profile, f1) for profile in profiles.values()])
 
-    closest_match = np.argmax(dists)
+    # closest_match = np.argmax(dists)
 
-    return list(profiles)[closest_match]
+    # Get 3 closest matches
+    closest_matches = dists.argsort()[-3:][::-1]
+    profile_names = list(profiles)
+
+    results = []
+    for match in closest_matches:
+
+        profile = profile_names[match]
+        score = round(100 * dists[match], 2)
+
+        results.append([profile, score])
+
+    return results
 
 
 #################################
@@ -446,12 +458,15 @@ async def predict_label_images(predict_images_info: PredictImagesInfo = PredictI
     logger.debug(f"found: {len(faces)} faces...")
 
     # Loop through faces
+    accuracy_scores = []
     for face in faces:
         left, top, right, bottom = face['bbox']
         face_encoding = face['vec']
 
         # See if the face is a match for the known face(s)
-        profile_name = find_closest_match(profiles, face_encoding)
+        guesses = find_closest_match(profiles, face_encoding)
+        profile_name = guesses[0][0]  # First guess, profile name
+        accuracy_scores[profile_name] = guesses
 
         # Draw a box around the face using the Pillow module
         draw.rectangle(((left, top), (right, bottom)), outline=(0, 0, 255))
@@ -469,7 +484,7 @@ async def predict_label_images(predict_images_info: PredictImagesInfo = PredictI
     output_image_stream.seek(0)
 
     # return {'image': output_image_stream.getvalue(), 'accuracy_scores': accuracy_scores}
-    return StreamingResponse(output_image_stream)
+    return StreamingResponse(output_image_stream, headers={'accuracy_scores': accuracy_scores})
 
     # except Exception as e:
     #     logger.error(f"Unable to analyze image: {e}")
@@ -544,10 +559,6 @@ async def find_person_process(find_person_info: FindPerson, all_profiles, images
             fr'"{find_person_info.rclone_drive}:/{find_person_info.path}/{photo_path}" '  # Source
             fr'"{find_person_info.rclone_drive}:/{find_person_info.output_dir}/{closest_match}/{photo_name}"'  # Destination
         )
-            # ['rclone', 'copyto',
-            #  fr'{find_person_info.rclone_drive}:/{find_person_info.path}/{photo_path}',  # Source
-            #  fr'{find_person_info.rclone_drive}:/{find_person_info.output_dir}/{photo_name}']  # Destination
-        # )
 
     await asyncio.gather(*[run(cmd) for cmd in copy_commands])
 
