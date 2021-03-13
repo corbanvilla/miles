@@ -63,7 +63,7 @@ def event_test(say, event, client):
                 say("Internal error... unable to reach backend: miles_api")
 
     elif command.split(" ")[0] == "find":
-        name = command.lsplit(" ", maxsplit=1)[:1]  # Take everything past the first word
+        name = command.split(" ", maxsplit=1)[-1]  # Take everything past the first word
 
         try:
             payload = {
