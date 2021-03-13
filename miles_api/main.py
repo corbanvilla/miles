@@ -423,7 +423,7 @@ async def predict_label_images(predict_images_info: PredictImagesInfo = PredictI
 
     draw = ImageDraw.Draw(overlay_image)
 
-    payload = {"images": {"data": [b64encode(image.file.read()).decode('utf-8')]}}
+    payload = {"images": {"data": [b64encode(overlay_image).decode('utf-8')]}}
 
     try:
         req = requests.post(url='http://10.0.42.70:31428/extract', data=json.dumps(payload))
