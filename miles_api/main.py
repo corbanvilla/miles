@@ -436,7 +436,7 @@ async def predict_label_images(predict_images_info: PredictImagesInfo = PredictI
 
     # Loop through faces
     for face in faces:
-        top, right, bottom, left = face['bbox']
+        right, bottom, left, top = face['bbox']
         face_encoding = face['vec']
 
         # See if the face is a match for the known face(s)
