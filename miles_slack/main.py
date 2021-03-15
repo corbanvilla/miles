@@ -55,9 +55,9 @@ def event_test(say, event, client):
                 )
 
                 # accuracy_scores = [f'Top guesses: {guess} {score}%\n' for guess, score in json.loads(req.headers.get('accuracy_scores'))]
-                accuracy_scores = [f'{profile[0][0]} ({profile[0][1]}%)... or {profile[1][0]} ({profile[1][1]}%)... or {profile[2][0]} ({profile[2][1]}%)\n' for profile in json.loads(req.headers.get('accuracy_scores')).values()]
+                accuracy_scores = [f'*{profile[0][0]}* ({profile[0][1]}% match)... or {profile[1][0]} ({profile[1][1]}% match)... or {profile[2][0]} ({profile[2][1]}% match)\n' for profile in json.loads(req.headers.get('x-accuracy_scores')).values()]
 
-                say(f"Accuracy scores: {*accuracy_scores,}")
+                say("Match stats:\n{0}".format(accuracy_scores.__str__().strip('[]').replace('\\n', '\n').replace("'", "").replace(', ', '')))
 
             except requests.ConnectionError as e:
                 logger.error(f"Unable to reach backend.... {e}")
@@ -79,7 +79,7 @@ def event_test(say, event, client):
                 data=json.dumps(payload)
             )
 
-            say(f"Uploading photos of: {json.loads(req.text).get('profile_name')} to {RCLONE_DRIVE}:{DRIVE_PATH_PREFIX}/{DRIVE_OUTPUT_DIR}")
+            say(f"Uploading photos of: {json.loads(req.text).get('profile_name')} to {RCLONE_DRIVE}:{DRIVE_OUTPUT_DIR}")
             say(f"{DRIVE_OUTPUT_LINK}")
 
         except requests.ConnectionError as e:

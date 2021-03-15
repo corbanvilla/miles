@@ -21,6 +21,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, validator
 from typing import Optional, List
 from base64 import b64encode
+from io import BytesIO
 
 REDIS_HOST = os.environ.get('REDIS_HOST')
 redis_args = [REDIS_HOST]
@@ -443,14 +444,17 @@ class PredictImagesInfo(BaseModel):
 @app.post('/predict_label_image/')
 async def predict_label_images(response: Response, predict_images_info: PredictImagesInfo = PredictImagesInfo(), image: UploadFile = File(...)):
 
-    payload = {"images": {"data": [b64encode(image.file.read()).decode('utf-8')]}}
-
     # Create an image to draw on
-    overlay_image = Image.open(image.file)
-
+    overlay_image = Image.open(image.file).convert('RGB')  # Open and drop alpha channel
     draw = ImageDraw.Draw(overlay_image)
 
     # try:
+    img_jpg = BytesIO()
+    overlay_image.save(img_jpg, format="JPEG")
+
+    # payload = {"images": {"data": [b64encode(image.file.read()).decode('utf-8')]}}
+    payload = {"images": {"data": [b64encode(img_jpg.getvalue()).decode('utf-8')]}}
+
     req = requests.post(url='http://10.0.42.70:31428/extract', data=json.dumps(payload))
 
     faces = json.loads(req.text)[0]
@@ -484,9 +488,11 @@ async def predict_label_images(response: Response, predict_images_info: PredictI
     output_image_stream.seek(0)
 
     # return {'image': output_image_stream.getvalue(), 'accuracy_scores': accuracy_scores}
+    response = StreamingResponse(output_image_stream)
+
     response.headers['X-accuracy_scores'] = json.dumps(accuracy_scores)
 
-    return StreamingResponse(output_image_stream)
+    return response
 
     # except Exception as e:
     #     logger.error(f"Unable to analyze image: {e}")
@@ -517,7 +523,7 @@ class FindPerson(BaseModel):
 async def find_person(find_person_info: FindPerson, background_tasks: BackgroundTasks):
 
     # Find closest match
-    closest_match = fz_process.extractOne(find_person_info.search_string, all_profiles.keys())[0]
+    closest_match = find_person_info.search_string if find_person_info.search_string in all_profiles else fz_process.extractOne(find_person_info.search_string, all_profiles.keys())[0]
 
     # Start upload
     background_tasks.add_task(find_person_process, find_person_info, all_profiles, images_index, closest_match)

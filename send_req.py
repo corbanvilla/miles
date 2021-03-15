@@ -59,7 +59,7 @@ def download_images():
     print(x.text)
 
 
-download_images()
+# download_images()
 
 
 process_images = {
