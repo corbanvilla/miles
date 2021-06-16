@@ -57,6 +57,7 @@ logger.debug(f"Images loaded: {len(images_index)}")
 
 
 def compare_faces(f1, f2):
+
     def normalize(embedding):
         embedding_norm = norm(embedding)
         normed_embedding = embedding / embedding_norm
